@@ -1,20 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthStack from "./components/AuthStack";
+import AccountStack from "./components/AccountStack";
 
-export default function App() {
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is authenticated when the app starts
+    AsyncStorage.getItem("auth_token")
+      .then((token) => {
+        setIsAuthenticated(token !== null);
+      })
+      .catch((error) => {
+        console.error("Error checking authentication:", error);
+      });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      {/* {isAuthenticated ? <AccountStack /> : <AuthStack />} */}
+      <AccountStack />
+      {/* <AuthStack /> */}
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
